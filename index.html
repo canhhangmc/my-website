@@ -3,21 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Input Web</title>
+    <!-- Firebase v9+ modular SDK -->
+    <script type="module">
+        // Import các hàm cần thiết từ Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        // Cấu hình Firebase của bạn
+        const firebaseConfig = {
+          apiKey: "AIzaSyAjAarACzYdo0RhvVdTUUAxOzH9zkBohvE",
+          authDomain: "testt-7ebb9.firebaseapp.com",
+          databaseURL: "https://testt-7ebb9-default-rtdb.firebaseio.com",
+          projectId: "testt-7ebb9",
+          storageBucket: "testt-7ebb9.firebasestorage.app",
+          messagingSenderId: "795189970262",
+          appId: "1:795189970262:web:5cd976d9f62d91457302f7",
+          measurementId: "G-51HBEREPCE"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Hàm gửi text
+        window.sendText = function() {
+            const input = document.getElementById('textInput').value;
+            set(ref(db, 'latestText'), input);
+            document.getElementById('textInput').value = '';
+        }
+
+        // Lắng nghe text mới nhất
+        const latestTextRef = ref(db, 'latestText');
+        onValue(latestTextRef, (snapshot) => {
+            const text = snapshot.val();
+            document.getElementById('displayText').innerText = text || '';
+        });
+    </script>
 </head>
 <body>
-    <h2>Nhập text vào đây:</h2>
+    <h2>Nhập text:</h2>
     <input type="text" id="textInput" placeholder="Nhập text...">
     <button onclick="sendText()">Send</button>
 
-    <h3>Text đã nhận:</h3>
+    <h3>Text mới nhất:</h3>
     <p id="displayText"></p>
-
-    <script>
-        function sendText() {
-            const input = document.getElementById('textInput').value;
-            document.getElementById('displayText').innerText = input;
-            console.log("Text nhận được:", input); // In ra console để bạn kiểm tra
-        }
-    </script>
 </body>
 </html>
