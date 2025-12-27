@@ -1,51 +1,254 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Input Web</title>
-    <!-- Firebase v9+ modular SDK -->
-    <script type="module">
-        // Import các hàm cần thiết từ Firebase SDK
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        // Cấu hình Firebase của bạn
-        const firebaseConfig = {
-          apiKey: "AIzaSyAjAarACzYdo0RhvVdTUUAxOzH9zkBohvE",
-          authDomain: "testt-7ebb9.firebaseapp.com",
-          databaseURL: "https://testt-7ebb9-default-rtdb.firebaseio.com",
-          projectId: "testt-7ebb9",
-          storageBucket: "testt-7ebb9.firebasestorage.app",
-          messagingSenderId: "795189970262",
-          appId: "1:795189970262:web:5cd976d9f62d91457302f7",
-          measurementId: "G-51HBEREPCE"
-        };
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
 
-        // Khởi tạo Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+    animation: slideUp 0.5s ease;
+}
 
-        // Hàm gửi text
-        window.sendText = function() {
-            const input = document.getElementById('textInput').value;
-            set(ref(db, 'latestText'), input);
-            document.getElementById('textInput').value = '';
-        }
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 28px;
+    position: relative;
+    padding-bottom: 15px;
+}
 
-        // Lắng nghe text mới nhất
-        const latestTextRef = ref(db, 'latestText');
-        onValue(latestTextRef, (snapshot) => {
-            const text = snapshot.val();
-            document.getElementById('displayText').innerText = text || '';
-        });
-    </script>
-</head>
-<body>
-    <h2>Nhập text:</h2>
-    <input type="text" id="textInput" placeholder="Nhập text...">
-    <button onclick="sendText()">Send</button>
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 2px;
+}
 
-    <h3>Text mới nhất:</h3>
-    <p id="displayText"></p>
-</body>
-</html>
+.input-section, .output-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.input-section:hover, .output-section:hover {
+    border-color: #667eea;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+
+h2 {
+    color: #495057;
+    margin-bottom: 20px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+h2::before {
+    content: '📌';
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 20px;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    font-size: 16px;
+    resize: vertical;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+button {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(102, 126, 234, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.hint {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.message-box {
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 25px;
+    min-height: 200px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.empty-message {
+    color: #adb5bd;
+    text-align: center;
+    font-style: italic;
+    line-height: 200px;
+    margin: 0;
+}
+
+.message-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f3f5;
+}
+
+.message-header strong {
+    color: #495057;
+    font-size: 18px;
+}
+
+.timestamp {
+    color: #868e96;
+    font-size: 14px;
+}
+
+.message-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #212529;
+    white-space: pre-wrap;
+}
+
+.info {
+    background: #e7f5ff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.info p {
+    margin: 10px 0;
+    color: #495057;
+}
+
+.copy-btn {
+    background: #40c057;
+    padding: 10px 20px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.copy-btn:hover {
+    background: #37b24d;
+}
+
+.instructions {
+    background: #fff3bf;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 30px;
+}
+
+.instructions h3 {
+    color: #e67700;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.instructions ol {
+    margin-left: 20px;
+    color: #495057;
+}
+
+.instructions li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes highlight {
+    0% { background-color: transparent; }
+    50% { background-color: #fff3bf; }
+    100% { background-color: transparent; }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    .input-section, .output-section {
+        padding: 20px;
+    }
+}
